@@ -3,14 +3,15 @@ import os
 import sqlite3
 import io
 import numpy as np
+
 LABELS = "labels"
 labels = []
 CODES = "codes.npy"
 
-
 # 获取存储的标签
 def getLabels():
-    if LABELS: #存储标签的文件存在
+    # 存储标签的文件存在
+    if LABELS: 
         with open(LABELS, "r") as f:
             label = f.readlines()
             for line in label:

@@ -1,7 +1,9 @@
 import sqlite3
 
-# 查看数据库所有记录
 def search():
+    """
+    查看数据库所有记录
+    """
     conn = sqlite3.connect('paint.db')
     cursor = conn.cursor()
     nowLable = "human"
@@ -12,8 +14,10 @@ def search():
     cursor.close()
     conn.close()
 
-# 删除数据库所有记录
 def delteImage():
+    """
+    删除数据库所有记录
+    """
     conn = sqlite3.connect('paint.db')
     cursor = conn.cursor()
     cursor.execute('DELETE FROM image')
@@ -22,8 +26,10 @@ def delteImage():
     print(values) #result:[('1', 'Michael')]
     cursor.close()
     conn.close()
+
 def main():
     #delteImage()
     search()
+    
 if __name__ == '__main__':
     main()

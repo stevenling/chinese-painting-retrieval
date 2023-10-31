@@ -1,11 +1,11 @@
 import os
 import numpy as np
 import tensorflow as tf
-#import matplotlib.pyplot as plt
+import ftrain
+
 from tensorflow_vgg import vgg16
 from tensorflow_vgg import utils
-import ftrain
-# 运行
+
 # 运行多少轮次
 epochs = 20
 # 统计训练效果的频率

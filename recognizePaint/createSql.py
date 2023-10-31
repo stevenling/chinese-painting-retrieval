@@ -13,5 +13,6 @@ def creatDb():
 
 def main():
     creatDb()
+    
 if __name__ == '__main__':
     main()

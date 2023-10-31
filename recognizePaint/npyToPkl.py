@@ -1,11 +1,15 @@
 import pickle
 import numpy as np
-# 将之前保存的npy文件转换成pkl
+
 def createPkl():
+    """
+    将之前保存的 npy 文件转换成 pkl
+    """
     CODES = "codes.npy"
     codes = None
     if CODES:
-        codes = np.load(CODES) #存在有图片特征值的文件 就加载
+        # 存在图片特征值的文件, 那么就加载
+        codes = np.load(CODES) 
     else:
         print("No such file,please run get_feature.py first")
     output = open('imageData.pkl', 'wb')
@@ -14,6 +18,6 @@ def createPkl():
 
 def main():
     createPkl()
+
 if __name__ == '__main__':
     main()
-

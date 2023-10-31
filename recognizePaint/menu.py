@@ -73,14 +73,9 @@ class Ui_MainWindow(object):
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
-
-
         self.pushButton.clicked.connect(self.showImage)  #点击预测按钮
-
         self.pushButton2.clicked.connect(self.showImageCategory) #点击显示图像类别
-        #
         self.pushButton3.clicked.connect(self.showRetrievalResult) #点击显示检索到的图像
-
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -99,8 +94,6 @@ class Ui_MainWindow(object):
         self.label_3.setText(_translate("MainWindow", "")) #分类结果
         # self.label_4.setText(_translate("MainWindow", "")) #检索出来的图像的控件
 
-    # def showImageCategory(self):
-    #     print("jjjj")
     # 显示图像的类别
     def showImageCategory(self):
         print("start image category")
@@ -138,8 +131,6 @@ class Ui_MainWindow(object):
 
     #显示输入图像
     def showImage(self):
-        #self.label_3.setText("")
-        #self.label_4.setText("")
         imageUrl = self.lineEdit.text()  # 获取编辑框的本地图标路径
         jpg = QtGui.QPixmap(imageUrl).scaled(400, 400)
         self.label_2.setPixmap(jpg)
@@ -193,9 +184,6 @@ class Ui_MainWindow(object):
 
     def distance(self,x1, x2):
         return np.sqrt(np.sum((x1-x2)**2))
-
-
-
 
 from PyQt5.QtWidgets import QApplication, QMainWindow
 import sys
