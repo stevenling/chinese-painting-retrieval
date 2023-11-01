@@ -23,14 +23,13 @@ with tf.Session() as sess:
             feed = {ftrain.inputs_: x,
                     ftrain.labels_: y}
             # 训练模型
-
             loss, _ = sess.run([ftrain.cost, ftrain.optimizer], feed_dict=feed)
             print("Epoch: {}/{}".format(e + 1, epochs),
                   "Iteration: {}".format(iteration),
                   "Training loss: {:.5f}".format(loss))
             iteration += 1
-            #1个iteration等于使用batchsize个样本训练一次；
-            #1个epoch等于使用训练集中的全部样本训练一次
+            # 1 个 iteration 等于使用 batchsize 个样本训练一次；
+            # 1 个 epoch 等于使用训练集中的全部样本训练一次
             if iteration % 5 == 0:
                 feed = {ftrain.inputs_: ftrain.val_x,
                         ftrain.labels_: ftrain.val_y}

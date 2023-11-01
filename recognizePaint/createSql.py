@@ -1,6 +1,9 @@
 import sqlite3
-# 创建数据库
+
 def creatDb():
+    """
+    创建数据库
+    """
     conn = sqlite3.connect('paint.db')
     cursor = conn.cursor()
     cursor.execute('create table image(id integer primary key, label varchar(30), imgPath varchar(100), feature BLOB)')
@@ -13,6 +16,6 @@ def creatDb():
 
 def main():
     creatDb()
-    
+
 if __name__ == '__main__':
     main()

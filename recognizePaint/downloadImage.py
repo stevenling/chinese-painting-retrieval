@@ -1,11 +1,6 @@
 # https://gallery.artron.net/works/guohua.html?attributNum=795&attributNam=%E9%A2%98%E6%9D%90&caizhistr=797%2C%E9%A2%98%E6%9D%90%2C
 # !/usr/bin/env python
-
-
 # encoding=utf-8
-
-
-
 # python爬取 https://shop.artron.net/works/10088_w761428.html#nextworklink
 
 import requests
@@ -27,7 +22,6 @@ flag3 = 0
 #人物
 #https://gallery.artron.net/works/guohua.html?attributNum=795&attributNam=%E9%A2%98%E6%9D%90&caizhistr=796%2C%E9%A2%98%E6%9D%90%2C
 
-
 def download_page(url):
     return requests.get(url, headers={
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3236.0 Safari/537.36'
@@ -36,7 +30,6 @@ def download_page(url):
 
 
 # 爬取所有图集的url，放到一个allUrl这个list里
-
 def get_all_first_url():
     tempUrl = "https://gallery.artron.net/works/guohua.html?attributNum=797&attributNam=%E9%A2%98%E6%9D%90&caizhistr=796%2C%E9%A2%98%E6%9D%90%2C"
     pageindex = 0 #页数

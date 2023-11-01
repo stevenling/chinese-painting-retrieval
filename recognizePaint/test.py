@@ -8,10 +8,12 @@ import sqlite3
 import json
 import pickle
 import ftrain
+
 def convert_array(text):
     out = io.BytesIO(text)
     out.seek(0)
     return np.load(out)
+
 def test():
     saver = tf.train.Saver()
     imageUrl = "D://Desktop/花鸟1.jpg"  # 获取编辑框的本地图标路径
@@ -63,10 +65,12 @@ def test():
         resRecord = values[rst_index[0]]#查到的记录是
         retrievalResult = resRecord[2]
         print(retrievalResult)
+
 def distance(x1, x2):
     return (np.sum((x1 - x2) ** 2))
 
 def main():
     test()
+    
 if __name__ == '__main__':
     main()

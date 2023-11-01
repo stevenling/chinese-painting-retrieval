@@ -1,20 +1,23 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QFileDialog
 import numpy as np
 import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 import sys
 import pickle
 import sqlite3
 import tensorflow as tf
-#import matplotlib.pyplot as plt
-from tensorflow_vgg import vgg16
-from tensorflow_vgg import utils
 import ftrain
 import app
+
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QFileDialog
+from tensorflow_vgg import vgg16
+from tensorflow_vgg import utils
+
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+
 codes_batch = []
 imageUrl = ""
-preValue = ""  #图像的类别
+# 图像的类别
+preValue = ""  
 labels_vecs = ['flowerBird','human','landscape']
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -49,20 +52,21 @@ class Ui_MainWindow(object):
         self.lineEdit.setObjectName("lineEdit")
         self.lineEdit.setFont(QtGui.QFont("Roman times", 15, QtGui.QFont.Bold))  # 设置字体大小
 
-        #显示第一张图像
+        # 显示第一张图像
         self.label_2 = QtWidgets.QLabel(self.centralwidget)
         self.label_2.setGeometry(QtCore.QRect(100, 200, 800, 500))#左上宽高
         self.label_2.setObjectName("label_2")
 
-        #显示分类结果
+        # 显示分类结果
         self.label_3 = QtWidgets.QLabel(self.centralwidget)
-        self.label_3.setGeometry(QtCore.QRect(700, 200, 200, 200))#左上宽高
+        self.label_3.setGeometry(QtCore.QRect(700, 200, 200, 200))
         self.label_3.setObjectName("label_3")
-        self.label_3.setFont(QtGui.QFont("Roman times", 40, QtGui.QFont.Bold))#设置字体
+        # 设置字体
+        self.label_3.setFont(QtGui.QFont("Roman times", 40, QtGui.QFont.Bold))
 
-        #显示检索出来的图像
+        # 显示检索出来的图像
         self.label_4 = QtWidgets.QLabel(self.centralwidget)
-        self.label_4.setGeometry(QtCore.QRect(1000, 200, 800, 500))#左上宽高
+        self.label_4.setGeometry(QtCore.QRect(1000, 200, 800, 500))
         self.label_4.setObjectName("label_4")
 
         MainWindow.setCentralWidget(self.centralwidget)
@@ -73,36 +77,38 @@ class Ui_MainWindow(object):
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
-
-
-        self.pushButton.clicked.connect(self.showImage)  #点击预测按钮
-
-        self.pushButton2.clicked.connect(self.showImageCategory) #点击显示图像类别
-
-        self.pushButton3.clicked.connect(self.showRetrievalResult) #点击显示检索到的图像
-
+        # 点击预测按钮
+        self.pushButton.clicked.connect(self.showImage)  
+        # 点击显示图像类别
+        self.pushButton2.clicked.connect(self.showImageCategory) 
+        # 点击显示检索到的图像
+        self.pushButton3.clicked.connect(self.showRetrievalResult) 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-    def retranslateUi(self, MainWindow):  #显示前端的
+    def retranslateUi(self, MainWindow):  
+        """
+        显示前端的
+        """
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "图像检索"))
-
         self.pushButton.setText(_translate("MainWindow", "显示图像"))
-
         self.pushButton2.setText(_translate("MainWindow", "点击预测"))
-
         self.pushButton3.setText(_translate("MainWindow", "检索图像"))
-
         self.label.setText(_translate("MainWindow", "请输入图像路径："))
-        self.label_2.setText(_translate("MainWindow", "")) #输入图像的控件
-        self.label_3.setText(_translate("MainWindow", "")) #分类结果
-        self.label_4.setText(_translate("MainWindow", "")) #检索出来的图像的控件
-    # 显示图像的类别
+        self.label_2.setText(_translate("MainWindow", "")) # 输入图像的控件
+        self.label_3.setText(_translate("MainWindow", "")) # 分类结果
+        self.label_4.setText(_translate("MainWindow", "")) # 检索出来的图像的控件
+    
     def showImageCategory(self):
-        global codes_batch #输入的图像的特征值
+        """
+        显示图像的类别
+        """
+        # 输入的图像的特征值
+        global codes_batch 
         global preValue
-        imageUrl = self.lineEdit.text()  # 获取编辑框的本地图标路径
+        # 获取编辑框的本地图标路径
+        imageUrl = self.lineEdit.text()  
         # app.get_image_retrieval_result(imageUrl)
         testPicArr = []
         img_ready = utils.load_image(imageUrl)
@@ -118,7 +124,7 @@ class Ui_MainWindow(object):
             feed_dict = {input_: images}
             # 计算特征值
             codes_batch = sess.run(vgg.relu6, feed_dict=feed_dict)
-            # 返回y矩阵中最大值的下标，如果是二维的加1
+            # 返回 y 矩阵中最大值的下标，如果是二维的加1
             preValue = tf.argmax(ftrain.predicted, 1)
             # 加载训练好的新模型
             saver.restore(sess, tf.train.latest_checkpoint(ftrain.MODEL_SAVE_PATH))
@@ -131,16 +137,16 @@ class Ui_MainWindow(object):
             elif (preValue == 2):
                 self.label_3.setText("山水")
 
-    #显示输入图像
+    # 显示输入图像
     def showImage(self):
         print("start show image")
         self.label_3.setText("")
         self.label_4.setText("")
-        imageUrl = self.lineEdit.text()  # 获取编辑框的本地图标路径
+        imageUrl = self.lineEdit.text()  
         jpg = QtGui.QPixmap(imageUrl).scaled(400, 400)
         self.label_2.setPixmap(jpg)
 
-    #显示图像检索结果  从数据库中取出对应类别的所有特征值 每一个与输入的图像进行计算欧式距离 选择最小的
+    # 显示图像检索结果，从数据库中取出对应类别的所有特征值 每一个与输入的图像进行计算欧式距离 选择最小的
     def showRetrievalResult(self):
         print("start Retrieval image")
         global preValue
@@ -189,9 +195,6 @@ class Ui_MainWindow(object):
 
     def distance(self,x1, x2):
         return np.sqrt(np.sum((x1-x2)**2))
-
-
-
 
 from PyQt5.QtWidgets import QApplication, QMainWindow
 import sys

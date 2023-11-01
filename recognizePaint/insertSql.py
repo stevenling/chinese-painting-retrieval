@@ -27,7 +27,6 @@ def insertDb():
     else:
         print("No such file,please run get_feature.py first")
 
-
     #sqlite3.register_adapter(np.ndarray, adapt_array)
     conn = sqlite3.connect('paint.db')
     cursor = conn.cursor()

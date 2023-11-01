@@ -12,17 +12,18 @@ from PyQt5 import QtWidgets, QtCore
 preValue = ""
 labels_vecs = ['flowerBird','human','landscape']
 labels_vecs = np.array(labels_vecs)
+saver = tf.train.Saver()
 
 def per_picture():
     #deal with picture
     testPicArr = []
-    img_path = input('Input the path and image name:') #图像路径
+    # 图像路径
+    img_path = input('Input the path and image name:') 
     img_ready = utils.load_image(img_path)
     testPicArr.append(img_ready.reshape((1,224,224,3)))
+    # 将多个数组连接起来
     images = np.concatenate(testPicArr)
     return images
-
-saver = tf.train.Saver()
 
 def get_image_retrieval_result():
     global preValue
