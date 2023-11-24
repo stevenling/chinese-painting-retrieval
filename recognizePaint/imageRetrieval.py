@@ -130,11 +130,11 @@ class Ui_MainWindow(object):
             saver.restore(sess, tf.train.latest_checkpoint(ftrain.MODEL_SAVE_PATH))
             # 计算预测值
             preValue = sess.run(preValue, feed_dict={ftrain.inputs_: codes_batch})
-            if (preValue == 0):
+            if preValue == 0:
                 self.label_3.setText("花鸟")
-            elif (preValue == 1):
+            elif preValue == 1:
                 self.label_3.setText("人物")
-            elif (preValue == 2):
+            elif preValue == 2:
                 self.label_3.setText("山水")
 
     # 显示输入图像
@@ -188,7 +188,8 @@ class Ui_MainWindow(object):
         #显示检索出来的图像
         prefixImageURl = "C://Users/Administrator/PycharmProjects/recognizePaint/paint_photos/"
         self.label_4.setText("")
-        imageUrl = prefixImageURl + nowLabel + "/"+retrievalResult #拼接图像路径 前缀 + 文件名
+        # 拼接图像路径 前缀 + 文件名
+        imageUrl = prefixImageURl + nowLabel + "/"+retrievalResult
         print(imageUrl)
         jpg = QtGui.QPixmap(imageUrl).scaled(400, 400)
         self.label_4.setPixmap(jpg)

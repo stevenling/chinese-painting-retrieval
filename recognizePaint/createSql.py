@@ -13,7 +13,6 @@ def creatDb():
     cursor.close()
     conn.commit()
     conn.close()
-
 def main():
     creatDb()
 

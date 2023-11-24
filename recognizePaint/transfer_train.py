@@ -28,7 +28,7 @@ with tf.Session() as sess:
                   "Iteration: {}".format(iteration),
                   "Training loss: {:.5f}".format(loss))
             iteration += 1
-            # 1 个 iteration 等于使用 batchsize 个样本训练一次；
+            # 1 个 iteration 等于使用 batch size 个样本训练一次
             # 1 个 epoch 等于使用训练集中的全部样本训练一次
             if iteration % 5 == 0:
                 feed = {ftrain.inputs_: ftrain.val_x,

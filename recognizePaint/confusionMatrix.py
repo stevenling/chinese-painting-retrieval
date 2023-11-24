@@ -34,7 +34,7 @@ def get_img_url_list():
         # 具体的文件名
         files = os.listdir(class_path)
         preImgUrl = "C://Users/Administrator/PycharmProjects/recognizePaint/"  # 前缀
-        for i, file in enumerate(files, 1):  #file 人物验证1
+        for i, file in enumerate(files, 1):  # file 人物验证1
             #print(i)
             #print(files)
             imgUrl = class_path + "/" + file  ## test_photos/flowerBird/花鸟验证1.jpg
@@ -68,12 +68,9 @@ def get_image_retrieval_result():
             with tf.name_scope("content_vgg"):
                 vgg.build(input_)
             feed_dict = {input_: images}
-
             codes_batch = sess.run(vgg.relu6, feed_dict=feed_dict)
             preValue = tf.argmax(ftrain.predicted, 1)
-
             saver.restore(sess, tf.train.latest_checkpoint(ftrain.MODEL_SAVE_PATH))
-
             preValue = sess.run(preValue, feed_dict={ftrain.inputs_: codes_batch})
             if(j == 3):
                 j = 0

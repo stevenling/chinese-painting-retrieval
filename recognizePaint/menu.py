@@ -1,17 +1,20 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QFileDialog
+
 import numpy as np
 import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 import sys
 import pickle
 import sqlite3
 import tensorflow as tf
-#import matplotlib.pyplot as plt
-from tensorflow_vgg import vgg16
-from tensorflow_vgg import utils
 import ftrain
 import app
+
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QFileDialog
+from tensorflow_vgg import vgg16
+from tensorflow_vgg import utils
+
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+
 codes_batch = []
 imageUrl = ""
 preValue = ""  #图像的类别

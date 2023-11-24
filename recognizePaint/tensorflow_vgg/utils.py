@@ -10,17 +10,21 @@ import numpy as np
 # returns image of shape [224, 224, 3]
 # [height, width, depth]
 def load_image(path):
-    # load image
+    # 读取图像，加载为一个 numpy 数组
     img = skimage.io.imread(path)
+    # 将图像的像素值归一化到 0~1 之间
     img = img / 255.0
+    # 确保像素值在 0~1 之间
     assert (0 <= img).all() and (img <= 1.0).all()
     # print "Original Image Shape: ", img.shape
     # we crop image from center
+    # 计算短边的长度
     short_edge = min(img.shape[:2])
+    # 裁剪中心的矩形区域
     yy = int((img.shape[0] - short_edge) / 2)
     xx = int((img.shape[1] - short_edge) / 2)
     crop_img = img[yy: yy + short_edge, xx: xx + short_edge]
-    # resize to 224, 224
+    # 调整图像大小为 224*224
     resized_img = skimage.transform.resize(crop_img, (224, 224))
     return resized_img
 

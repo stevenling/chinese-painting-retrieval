@@ -77,7 +77,6 @@ np.save("codes.npy", codes)
 
 import csv
 
-# labels 文件名
 with open('labels', 'w') as f:
     """
     标签写入到 labels 文件中
