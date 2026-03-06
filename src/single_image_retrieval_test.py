@@ -4,6 +4,9 @@
 - 使用训练好的分类模型得到特征表示；
 - 从 SQLite 数据库 paint.db 中取出 label 为 "flowerBird" 的所有图片特征，
   计算与查询图片的欧式距离，找到距离最近的一张并输出其文件名。
+
+Author: yunhu
+Date: 2019/5/19
 """
 
 import tensorflow as tf
