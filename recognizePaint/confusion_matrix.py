@@ -35,21 +35,25 @@ def get_img_url_list():
         # paint_photos/human
         # 具体的文件名
         files = os.listdir(class_path)
-        preImgUrl = "C://Users/Administrator/PycharmProjects/recognizePaint/"  # 前缀
+        pre_img_url = "C://Users/Administrator/PycharmProjects/recognizePaint/"  # 前缀
         for i, file in enumerate(files, 1):  # file 人物验证1
             #print(i)
             #print(files)
-            imgUrl = class_path + "/" + file  ## test_photos/flowerBird/花鸟验证1.jpg
-            realImgUrl = preImgUrl + imgUrl # 完整的图像路径
-            #print(realImgUrl)
-            real_img_url_list.append(realImgUrl)  # 获取所有图像文件路径 存到 list 中
+            img_url = class_path + "/" + file  ## test_photos/flowerBird/花鸟验证1.jpg
+            real_img_url = pre_img_url + img_url # 完整的图像路径
+            #print(real_img_url)
+            real_img_url_list.append(real_img_url)  # 获取所有图像文件路径 存到 list 中
     print(real_img_url_list)
 
 
 def per_picture(count):
+    """
+    根据索引从 real_img_url_list 中取出第 count 张图片，
+    加载并预处理后，返回形状为 (1, 224, 224, 3) 的图像数组。
+    """
     test_pic_arr = []
     img_ready = utils.load_image(real_img_url_list[count])
-    test_pic_arr.append(img_ready.reshape((1,224,224,3)))
+    test_pic_arr.append(img_ready.reshape((1, 224, 224, 3)))
     images = np.concatenate(test_pic_arr)
     return images
 
@@ -58,6 +62,10 @@ i = 0
 j = 0
 
 def get_image_retrieval_result():
+    """
+    使用训练好的模型对测试集中的图片逐张进行预测，
+    并将预测结果填入混淆矩阵 res 中，用于统计各类别的分类情况。
+    """
     global pre_value
     global i, j
     count = 0
@@ -74,7 +82,7 @@ def get_image_retrieval_result():
             pre_value = tf.argmax(ftrain.predicted, 1)
             saver.restore(sess, tf.train.latest_checkpoint(ftrain.MODEL_SAVE_PATH))
             pre_value = sess.run(pre_value, feed_dict={ftrain.inputs_: codes_batch})
-            if(j == 3):
+            if j == 3:
                 j = 0
                 i = i + 1
             res[i][j] = pre_value + 1

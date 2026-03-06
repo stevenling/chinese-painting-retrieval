@@ -1,8 +1,9 @@
 # coding=utf-8
 """
 获取数据集的特征值，存放在 codes.npy 中
-author yunhu
-date 2019/5/19
+
+Author: yunhu
+Date: 2019/5/19
 """
 
 import os
@@ -28,47 +29,74 @@ labels = []
 # batch 数组用来临时存储图片数据
 batch = []
 codes = None
-with tf.Session() as sess:
-    # 构建 VGG16 模型对象
+
+
+def build_vgg_model():
+    """
+    构建 VGG16 模型和输入占位符。
+    返回值为 (vgg, input_)。
+    """
     vgg = vgg16.Vgg16()
-    # 开辟一个空间 神经网络构建 graph 的时候在模型中的占位
-    input_ = tf.placeholder(tf.float32, [None, 224, 224, 3]) 
-    # 图像是一个维度是 [None,224,224,3] 的张量
+    input_ = tf.placeholder(tf.float32, [None, 224, 224, 3])
     with tf.name_scope("content_vgg"):
-        # 载入 VGG16 模型
         vgg.build(input_)
+    return vgg, input_
+
+
+def process_batch(batch_images, input_, vgg, sess, codes_array):
+    """
+    将当前 batch 的图像送入 VGG16 计算特征，并累积到 codes_array 中。
+    返回更新后的 codes_array。
+    """
+    images = np.concatenate(batch_images)
+    feed_dict = {input_: images}
+    codes_batch = sess.run(vgg.relu6, feed_dict=feed_dict)
+
+    if codes_array is None:
+        return codes_batch
+
+    return np.concatenate((codes_array, codes_batch))
+
+
+def extract_features_for_class(class_name, data_dir, batch_size, input_, vgg, sess, codes_array, labels_list):
+    """
+    对某一类别（class_name）下的所有图片提取特征，
+    并将特征累积到 codes_array 中，同时把标签写入 labels_list。
+    """
+    batch_images = []
+    class_path = os.path.join(data_dir, class_name)
+    files = os.listdir(class_path)
+
+    for ii, file in enumerate(files, 1):
+        img_path = os.path.join(class_path, file)
+        img = utils.load_image(img_path)
+        batch_images.append(img.reshape((1, 224, 224, 3)))
+        labels_list.append(class_name)
+
+        # 如果图片数量到了 batch_size 或者已经是最后一张，则开始计算该 batch 的特征
+        if ii % batch_size == 0 or ii == len(files):
+            codes_array = process_batch(batch_images, input_, vgg, sess, codes_array)
+            batch_images = []
+            print('{} images processed for class {}'.format(ii, class_name))
+
+    return codes_array
+
+
+with tf.Session() as sess:
+    vgg, input_ = build_vgg_model()
     # 对每个不同种类的国画分别用 VGG16 计算特征值
-    for each in classes:
-        print("Starting {} images".format(each))
-        class_path = data_dir + each
-        # paint_photos/human
-        # 具体的文件名
-        files = os.listdir(class_path)
-        for ii, file in enumerate(files, 1):
-            # 载入图像并放入 batch 数组中
-            # paint_photos/human/人物1.jpg
-            img = utils.load_image(os.path.join(class_path, file))
-            batch.append(img.reshape((1, 224, 224, 3)))
-            # 标签名
-            labels.append(each)
-
-            # 如果图片数量到了 batch_size 则开始具体的运算，或者结束
-            if ii % batch_size == 0 or ii == len(files):
-                # 拼接
-                images = np.concatenate(batch)
-                feed_dict = {input_: images}
-                # 计算特征值
-                codes_batch = sess.run(vgg.relu6, feed_dict = feed_dict)
-                # 将结果放入到 codes 数组中， codes 存放所有图片的特征值
-                if codes is None:
-                    codes = codes_batch
-                else:
-                    # 拼接
-                    codes = np.concatenate((codes, codes_batch))
-
-                # 清空数组准备下一个batch的计算
-                batch = []
-                print('{} images processed'.format(ii))
+    for class_name in classes:
+        print("Starting {} images".format(class_name))
+        codes = extract_features_for_class(
+            class_name,
+            data_dir,
+            batch_size,
+            input_,
+            vgg,
+            sess,
+            codes,
+            labels
+        )
 
 
 # 这样我们就可以得到一个 codes 数组，和一个 labels 数组，分别存储了所有国画的特征值和类别。

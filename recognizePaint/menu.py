@@ -20,7 +20,7 @@ imageUrl = ""
 pre_value = ""  #图像的类别
 labels_vecs = ['flowerBird','human','landscape']
 class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
+    def setup_ui(self, MainWindow):
         MainWindow.setObjectName("图像预测")
         MainWindow.resize(1500, 800)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
@@ -76,13 +76,13 @@ class Ui_MainWindow(object):
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
-        self.pushButton.clicked.connect(self.showImage)  #点击预测按钮
-        self.pushButton2.clicked.connect(self.showImageCategory) #点击显示图像类别
-        self.pushButton3.clicked.connect(self.showRetrievalResult) #点击显示检索到的图像
-        self.retranslateUi(MainWindow)
+        self.pushButton.clicked.connect(self.show_image)  #点击预测按钮
+        self.pushButton2.clicked.connect(self.show_image_category) #点击显示图像类别
+        self.pushButton3.clicked.connect(self.show_retrieval_result) #点击显示检索到的图像
+        self.retranslate_ui(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-    def retranslateUi(self, MainWindow):  #显示前端的
+    def retranslate_ui(self, MainWindow):  #显示前端的
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "图像检索"))
 
@@ -98,7 +98,7 @@ class Ui_MainWindow(object):
         # self.label_4.setText(_translate("MainWindow", "")) #检索出来的图像的控件
 
     # 显示图像的类别
-    def showImageCategory(self):
+    def show_image_category(self):
         print("start image category")
         global codes_batch #输入的图像的特征值
         global pre_value
@@ -133,13 +133,13 @@ class Ui_MainWindow(object):
                 self.label_3.setText("山水")
 
     #显示输入图像
-    def showImage(self):
+    def show_image(self):
         imageUrl = self.lineEdit.text()  # 获取编辑框的本地图标路径
         jpg = QtGui.QPixmap(imageUrl).scaled(400, 400)
         self.label_2.setPixmap(jpg)
 
     # #显示图像检索结果  从数据库中取出对应类别的所有特征值 每一个与输入的图像进行计算欧式距离 选择最小的
-    def showRetrievalResult(self):
+    def show_retrieval_result(self):
         print("start Retrieval image")
         global pre_value
         global codes_batch
@@ -195,6 +195,6 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     MainWindow = QMainWindow()
     ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
+    ui.setup_ui(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())

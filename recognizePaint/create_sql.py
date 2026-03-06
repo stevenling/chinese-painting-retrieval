@@ -1,6 +1,6 @@
 import sqlite3
 
-def creatDb():
+def create_db():
     """
     创建数据库
     """
@@ -13,8 +13,9 @@ def creatDb():
     cursor.close()
     conn.commit()
     conn.close()
+    
 def main():
-    creatDb()
+    create_db()
 
 if __name__ == '__main__':
     main()

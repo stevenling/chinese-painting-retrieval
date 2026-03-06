@@ -1,3 +1,8 @@
+"""
+加载已训练好的 TensorFlow 模型（paint.ckpt.meta），
+并将其计算图导出到 ./log 目录，便于使用 TensorBoard 可视化网络结构。
+"""
+
 import tensorflow as tf
 
 g = tf.Graph()

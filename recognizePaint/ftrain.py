@@ -1,3 +1,13 @@
+"""
+使用从 VGG16 提取的图像特征训练国画分类器，并划分训练集、验证集和测试集。
+
+主要功能：
+- 从本地特征文件和标签文件中加载数据
+- 使用 StratifiedShuffleSplit 按 8:1:1 划分训练/验证/测试集
+- 构建两层全连接网络（256 维 + 3 类 softmax），定义损失和优化器
+- 提供按 batch 产出数据的生成器函数 get_batches
+"""
+
 # coding=utf-8
 import os
 import numpy as np

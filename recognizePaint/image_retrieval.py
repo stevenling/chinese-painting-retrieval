@@ -20,7 +20,7 @@ imageUrl = ""
 pre_value = ""  
 labels_vecs = ['flowerBird','human','landscape']
 class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
+    def setup_ui(self, MainWindow):
         MainWindow.setObjectName("图像预测")
         MainWindow.resize(1500, 800)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
@@ -78,15 +78,15 @@ class Ui_MainWindow(object):
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
         # 点击预测按钮
-        self.pushButton.clicked.connect(self.showImage)  
+        self.pushButton.clicked.connect(self.show_image)  
         # 点击显示图像类别
-        self.pushButton2.clicked.connect(self.showImageCategory) 
+        self.pushButton2.clicked.connect(self.show_image_category) 
         # 点击显示检索到的图像
-        self.pushButton3.clicked.connect(self.showRetrievalResult) 
-        self.retranslateUi(MainWindow)
+        self.pushButton3.clicked.connect(self.show_retrieval_result) 
+        self.retranslate_ui(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-    def retranslateUi(self, MainWindow):  
+    def retranslate_ui(self, MainWindow):  
         """
         显示前端的
         """
@@ -100,7 +100,7 @@ class Ui_MainWindow(object):
         self.label_3.setText(_translate("MainWindow", "")) # 分类结果
         self.label_4.setText(_translate("MainWindow", "")) # 检索出来的图像的控件
     
-    def showImageCategory(self):
+    def show_image_category(self):
         """
         显示图像的类别
         """
@@ -138,7 +138,7 @@ class Ui_MainWindow(object):
                 self.label_3.setText("山水")
 
     # 显示输入图像
-    def showImage(self):
+    def show_image(self):
         print("start show image")
         self.label_3.setText("")
         self.label_4.setText("")
@@ -147,7 +147,7 @@ class Ui_MainWindow(object):
         self.label_2.setPixmap(jpg)
 
     # 显示图像检索结果，从数据库中取出对应类别的所有特征值 每一个与输入的图像进行计算欧式距离 选择最小的
-    def showRetrievalResult(self):
+    def show_retrieval_result(self):
         print("start Retrieval image")
         global pre_value
         global codes_batch
@@ -204,6 +204,6 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     MainWindow = QMainWindow()
     ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
+    ui.setup_ui(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
