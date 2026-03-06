@@ -1,31 +1,33 @@
 #coding=utf-8
-import numpy as np
 import os
 import sys
-import tensorflow as tf
-import ftrain
 
-from tensorflow_vgg import vgg16
-from tensorflow_vgg import utils
+import numpy as np
+import tensorflow as tf
 from PyQt5 import QtWidgets, QtCore
+from tensorflow_vgg import utils, vgg16
+
+import ftrain
 
 # 数据来源文件夹
 test_data_dir = 'test_photos/' 
 # 返回指定的文件夹包含的文件或文件夹的名字的列表
 contents = os.listdir(test_data_dir)
+# classes 最终是一个列表，比如 ['flowerBird', 'human', 'landscape']
+# 表示测试集下有这几个类别文件夹。
 classes = [each for each in contents if os.path.isdir(test_data_dir + each)]
 
-preValue = ""
+pre_value = ""
 res = np.zeros((3,3))
 labels_vecs = ['flowerBird','human','landscape']
 labels_vecs = np.array(labels_vecs)
-realImgUrlList = []
+real_img_url_list = []
 
 def get_img_url_list():
     """
     获取所有图片的完整路径
     """
-    testPicArr = []
+    test_pic_arr = []
     print(classes) # ['flowerBird', 'human', 'landscape']
     for each in classes:
         print("Starting {} images".format(each))
@@ -40,15 +42,15 @@ def get_img_url_list():
             imgUrl = class_path + "/" + file  ## test_photos/flowerBird/花鸟验证1.jpg
             realImgUrl = preImgUrl + imgUrl # 完整的图像路径
             #print(realImgUrl)
-            realImgUrlList.append(realImgUrl)  # 获取所有图像文件路径 存到 list 中
-    print(realImgUrlList)
+            real_img_url_list.append(realImgUrl)  # 获取所有图像文件路径 存到 list 中
+    print(real_img_url_list)
 
 
 def per_picture(count):
-    testPicArr = []
-    img_ready = utils.load_image(realImgUrlList[count])
-    testPicArr.append(img_ready.reshape((1,224,224,3)))
-    images = np.concatenate(testPicArr)
+    test_pic_arr = []
+    img_ready = utils.load_image(real_img_url_list[count])
+    test_pic_arr.append(img_ready.reshape((1,224,224,3)))
+    images = np.concatenate(test_pic_arr)
     return images
 
 saver = tf.train.Saver()
@@ -56,7 +58,7 @@ i = 0
 j = 0
 
 def get_image_retrieval_result():
-    global preValue
+    global pre_value
     global i, j
     count = 0
     while count < 9:
@@ -69,16 +71,16 @@ def get_image_retrieval_result():
                 vgg.build(input_)
             feed_dict = {input_: images}
             codes_batch = sess.run(vgg.relu6, feed_dict=feed_dict)
-            preValue = tf.argmax(ftrain.predicted, 1)
+            pre_value = tf.argmax(ftrain.predicted, 1)
             saver.restore(sess, tf.train.latest_checkpoint(ftrain.MODEL_SAVE_PATH))
-            preValue = sess.run(preValue, feed_dict={ftrain.inputs_: codes_batch})
+            pre_value = sess.run(pre_value, feed_dict={ftrain.inputs_: codes_batch})
             if(j == 3):
                 j = 0
                 i = i + 1
-            res[i][j] = preValue + 1
+            res[i][j] = pre_value + 1
             print(res[i][j])
-            #print(labels_vecs[preValue])
-            #print ("The prediction paint is:", labels_vecs[preValue])
+            #print(labels_vecs[pre_value])
+            #print ("The prediction paint is:", labels_vecs[pre_value])
 
 def show():
     """
@@ -91,7 +93,7 @@ def show():
 def main():
     # 获取测试图片集合
     get_img_url_list()  
-    get_image_retrieval_result()
+    get_image_retrieval_result()  
     show()
 
 if __name__ == '__main__':

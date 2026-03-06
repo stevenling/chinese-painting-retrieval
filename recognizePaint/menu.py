@@ -17,7 +17,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 codes_batch = []
 imageUrl = ""
-preValue = ""  #图像的类别
+pre_value = ""  #图像的类别
 labels_vecs = ['flowerBird','human','landscape']
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -101,13 +101,13 @@ class Ui_MainWindow(object):
     def showImageCategory(self):
         print("start image category")
         global codes_batch #输入的图像的特征值
-        global preValue
+        global pre_value
         imageUrl = self.lineEdit.text()  # 获取编辑框的本地图标路径
         # app.get_image_retrieval_result(imageUrl)
-        testPicArr = []
+        test_pic_arr = []
         img_ready = utils.load_image(imageUrl)
-        testPicArr.append(img_ready.reshape((1, 224, 224, 3)))
-        images = np.concatenate(testPicArr)  # 预处理好图像
+        test_pic_arr.append(img_ready.reshape((1, 224, 224, 3)))
+        images = np.concatenate(test_pic_arr)  # 预处理好图像
         saver = tf.train.Saver()
         with tf.Session() as sess:
             vgg = vgg16.Vgg16()
@@ -119,17 +119,17 @@ class Ui_MainWindow(object):
             # 计算特征值
             codes_batch = sess.run(vgg.relu6, feed_dict=feed_dict)
             # 返回y矩阵中最大值的下标，如果是二维的加1
-            preValue = tf.argmax(ftrain.predicted, 1)
+            pre_value = tf.argmax(ftrain.predicted, 1)
             # 加载训练好的新模型
             saver.restore(sess, tf.train.latest_checkpoint(ftrain.MODEL_SAVE_PATH))
             # 计算预测值
-            preValue = sess.run(preValue, feed_dict={ftrain.inputs_: codes_batch})
-            print(preValue)
-            if (preValue == 0):
+            pre_value = sess.run(pre_value, feed_dict={ftrain.inputs_: codes_batch})
+            print(pre_value)
+            if (pre_value == 0):
                 self.label_3.setText("花鸟")
-            elif (preValue == 1):
+            elif (pre_value == 1):
                 self.label_3.setText("人物")
-            elif (preValue == 2):
+            elif (pre_value == 2):
                 self.label_3.setText("山水")
 
     #显示输入图像
@@ -141,19 +141,19 @@ class Ui_MainWindow(object):
     # #显示图像检索结果  从数据库中取出对应类别的所有特征值 每一个与输入的图像进行计算欧式距离 选择最小的
     def showRetrievalResult(self):
         print("start Retrieval image")
-        global preValue
+        global pre_value
         global codes_batch
         global labels_vecs
-        print(preValue)
+        print(pre_value)
         codes_batch = np.array(codes_batch)
         [codes_batch] = codes_batch  #去掉一个维度
 
-        #nowLabel = labels_vecs[preValue] #当前的类别
-        if preValue == 0:
+        #nowLabel = labels_vecs[pre_value] #当前的类别
+        if pre_value == 0:
             nowLabel = "flowerBird"
-        elif (preValue == 1):
+        elif (pre_value == 1):
             nowLabel = "human"
-        elif (preValue == 2):
+        elif (pre_value == 2):
             nowLabel = "landscape"
         print(nowLabel)
         conn = sqlite3.connect('paint.db')

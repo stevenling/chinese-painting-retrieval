@@ -17,10 +17,10 @@ def convert_array(text):
 def test():
     saver = tf.train.Saver()
     imageUrl = "D://Desktop/花鸟1.jpg"  # 获取编辑框的本地图标路径
-    testPicArr = []
+    test_pic_arr = []
     img_ready = utils.load_image(imageUrl)
-    testPicArr.append(img_ready.reshape((1, 224, 224, 3)))
-    images = np.concatenate(testPicArr)  # 预处理好图像
+    test_pic_arr.append(img_ready.reshape((1, 224, 224, 3)))
+    images = np.concatenate(test_pic_arr)  # 预处理好图像
     with tf.Session() as sess:
         vgg = vgg16.Vgg16()
         input_ = tf.placeholder(tf.float32, [None, 224, 224, 3])
@@ -31,11 +31,11 @@ def test():
         codes_batch = sess.run(vgg.relu6, feed_dict=feed_dict)
         #print(codes_batch)
         #返回y矩阵中最大值的下标，如果是二维的加1
-        preValue = tf.argmax(ftrain.predicted, 1)
+        pre_value = tf.argmax(ftrain.predicted, 1)
         # 加载训练好的新模型
         saver.restore(sess, tf.train.latest_checkpoint(ftrain.MODEL_SAVE_PATH))
         # 计算预测值
-        preValue = sess.run(preValue, feed_dict={ftrain.inputs_: codes_batch})
+        pre_value = sess.run(pre_value, feed_dict={ftrain.inputs_: codes_batch})
         conn = sqlite3.connect("paint.db", detect_types=sqlite3.PARSE_DECLTYPES)
 
         #conn = sqlite3.connect('paint.db')

@@ -14,7 +14,7 @@ test_data_dir = 'test_photos/'  # 数据来源文件夹
 contents = os.listdir(test_data_dir)  # 返回指定的文件夹包含的文件或文件夹的名字的列表
 classes = [each for each in contents if os.path.isdir(test_data_dir + each)]
 
-preValue = ""
+pre_value = ""
 res = np.zeros((3, 3))
 labels_vecs = ['flowerBird', 'human', 'landscape']
 labels_vecs = np.array(labels_vecs)
@@ -26,7 +26,7 @@ vgg = vgg16.Vgg16()
 # 获取所有图片的完整路径
 def get_img_url_list():
     # deal with picture
-    testPicArr = []
+    test_pic_arr = []
     # print(classes) # ['flowerBird', 'human', 'landscape']
     for each in classes:
         print("Starting {} images".format(each))
@@ -46,10 +46,10 @@ def get_img_url_list():
 
 def per_picture(count):
     # deal with picture
-    testPicArr = []
+    test_pic_arr = []
     img_ready = utils.load_image(realImgUrlList[count])
-    testPicArr.append(img_ready.reshape((1, 224, 224, 3)))
-    images = np.concatenate(testPicArr)
+    test_pic_arr.append(img_ready.reshape((1, 224, 224, 3)))
+    images = np.concatenate(test_pic_arr)
     return images
 
 
@@ -59,7 +59,7 @@ j = 0
 
 
 def get_image_retrieval_result():
-    global preValue
+    global pre_value
     global sess
     global vgg
     global i, j
@@ -72,15 +72,15 @@ def get_image_retrieval_result():
             vgg.build(input_)
         feed_dict = {input_: images}
         codes_batch = sess.run(vgg.relu6, feed_dict=feed_dict)
-        preValue = tf.argmax(ftrain.predicted, 1)
+        pre_value = tf.argmax(ftrain.predicted, 1)
 
         saver.restore(sess, tf.train.latest_checkpoint(ftrain.MODEL_SAVE_PATH))
 
-        preValue = sess.run(preValue, feed_dict={ftrain.inputs_: codes_batch})
+        pre_value = sess.run(pre_value, feed_dict={ftrain.inputs_: codes_batch})
         if j == 3:
             j = 0
             i = i + 1
-        res[i][j] = preValue + 1
+        res[i][j] = pre_value + 1
         print(res[i][j])
 
 
