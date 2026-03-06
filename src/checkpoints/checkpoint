@@ -1,0 +1,2 @@
+model_checkpoint_path: "paint.ckpt"
+all_model_checkpoint_paths: "paint.ckpt"
