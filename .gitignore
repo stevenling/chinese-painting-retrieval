@@ -1,0 +1,8 @@
+__pycache__/
+.venv/
+*.pyc
+
+# Ignore trained model checkpoints
+*.keras
+*.h5
+
