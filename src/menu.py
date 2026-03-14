@@ -1,14 +1,18 @@
+"""
+图像预测与检索的 PyQt5 图形界面，使用 VGG16 提取特征，训练分类器，支持本地图片路径输入。
 
-import numpy as np
+Author: yunhu
+Date: 2019/5/19
+"""
 import os
-import sys
 import pickle
 import sqlite3
+import sys
+import numpy as np
 import tensorflow as tf
 import ftrain
-
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QFileDialog, QMessageBox
+from PyQt5.QtWidgets import QApplication, QFileDialog, QMainWindow, QMessageBox
 
 import config
 from core import model_v2 as model
@@ -28,17 +32,16 @@ class Ui_MainWindow(object):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
 
-        self.pushButton = QtWidgets.QPushButton(self.centralwidget) #第一个按钮点击显示图片
+        self.pushButton = QtWidgets.QPushButton(self.centralwidget)  # 第一个按钮点击显示图片
         self.pushButton.setGeometry(QtCore.QRect(600, 90, 200, 50))
         self.pushButton.setObjectName("pushButton")
         self.pushButton.setFont(QtGui.QFont("Roman times", 15, QtGui.QFont.Bold))  # 第一个按钮设置字体大小
 
-        self.pushButton2 = QtWidgets.QPushButton(self.centralwidget) #第二个按钮点击进行图像预测
+        self.pushButton2 = QtWidgets.QPushButton(self.centralwidget)  # 第二个按钮点击进行图像预测
         self.pushButton2.setGeometry(QtCore.QRect(900, 90, 200, 50))
         self.pushButton2.setObjectName("pushButton2")
         self.pushButton2.setFont(QtGui.QFont("Roman times", 15, QtGui.QFont.Bold))  # 第二个按钮设置字体大小
-        #
-        self.pushButton3 = QtWidgets.QPushButton(self.centralwidget) #第三个按钮点击进行图像检索
+        self.pushButton3 = QtWidgets.QPushButton(self.centralwidget)  # 第三个按钮点击进行图像检索
         self.pushButton3.setGeometry(QtCore.QRect(1200, 90, 200, 50))
         self.pushButton3.setObjectName("pushButton3")
         self.pushButton3.setFont(QtGui.QFont("Roman times", 15, QtGui.QFont.Bold))  # 设置字体大小
@@ -54,18 +57,17 @@ class Ui_MainWindow(object):
         self.lineEdit.setObjectName("lineEdit")
         self.lineEdit.setFont(QtGui.QFont("Roman times", 15, QtGui.QFont.Bold))  # 设置字体大小
 
-        #显示第一张图像
+        # 显示第一张图像
         self.label_2 = QtWidgets.QLabel(self.centralwidget)
         self.label_2.setGeometry(QtCore.QRect(100, 200, 800, 500))
         self.label_2.setObjectName("label_2")
 
-        #显示分类结果
+        # 显示分类结果
         self.label_3 = QtWidgets.QLabel(self.centralwidget)
-        self.label_3.setGeometry(QtCore.QRect(300, 80, 200, 200))#左上宽高
+        self.label_3.setGeometry(QtCore.QRect(300, 80, 200, 200))  # 左上宽高
         self.label_3.setObjectName("label_3")
-        self.label_3.setFont(QtGui.QFont("Roman times", 40, QtGui.QFont.Bold))#设置字体
-        #
-        # #显示检索出来的图像
+        self.label_3.setFont(QtGui.QFont("Roman times", 40, QtGui.QFont.Bold))  # 设置字体
+        # 显示检索出来的图像
         self.label_4 = QtWidgets.QLabel(self.centralwidget)
         self.label_4.setGeometry(QtCore.QRect(800, 200, 800, 500))
         self.label_4.setObjectName("label_4")
@@ -78,13 +80,13 @@ class Ui_MainWindow(object):
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
-        self.pushButton.clicked.connect(self.show_image)  #点击预测按钮
-        self.pushButton2.clicked.connect(self.show_image_category) #点击显示图像类别
-        self.pushButton3.clicked.connect(self.show_retrieval_result) #点击显示检索到的图像
+        self.pushButton.clicked.connect(self.show_image)  # 点击预测按钮
+        self.pushButton2.clicked.connect(self.show_image_category)  # 点击显示图像类别
+        self.pushButton3.clicked.connect(self.show_retrieval_result)  # 点击显示检索到的图像
         self.retranslate_ui(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-    def retranslate_ui(self, MainWindow):  #显示前端的
+    def retranslate_ui(self, MainWindow):  # 显示前端的
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "图像检索"))
 
@@ -95,9 +97,9 @@ class Ui_MainWindow(object):
         # self.pushButton3.setText(_translate("MainWindow", "检索图像"))
 
         self.label.setText(_translate("MainWindow", "请输入图像路径："))
-        self.label_2.setText(_translate("MainWindow", "")) #输入图像的控件
-        self.label_3.setText(_translate("MainWindow", "")) #分类结果
-        # self.label_4.setText(_translate("MainWindow", "")) #检索出来的图像的控件
+        self.label_2.setText(_translate("MainWindow", ""))  # 输入图像的控件
+        self.label_3.setText(_translate("MainWindow", ""))  # 分类结果
+        # self.label_4.setText(_translate("MainWindow", ""))  # 检索出来的图像的控件
 
     # 显示图像的类别
     def show_image_category(self):
@@ -125,7 +127,7 @@ class Ui_MainWindow(object):
         else:
             self.label_3.setText("未知类别")
 
-    #显示输入图像
+    # 显示输入图像
     def show_image(self):
         image_url = self.lineEdit.text()  # 获取编辑框的本地图标路径
         if not image_url:
@@ -208,9 +210,6 @@ class Ui_MainWindow(object):
             return
         jpg = QtGui.QPixmap(full_path).scaled(400, 400)
         self.label_4.setPixmap(jpg)
-
-from PyQt5.QtWidgets import QApplication, QMainWindow
-import sys
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

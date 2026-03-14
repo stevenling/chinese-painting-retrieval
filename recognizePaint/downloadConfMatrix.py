@@ -5,9 +5,6 @@
 - 先抓取所有作品详情页的 URL
 - 再从每个详情页提取图片的真实地址
 - 最后按顺序把图片保存到本地目录
-
-Author: yunhu
-Date: 2019/5/19
 """
 
 import requests
@@ -112,4 +109,3 @@ def download():
 
 if __name__ == '__main__':
     main()
-    # download();

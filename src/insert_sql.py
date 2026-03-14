@@ -9,6 +9,9 @@
 - 从 labels 文件中加载标签到内存
 - 从 imageData.pkl（或 codes.npy）中加载特征
 - 遍历 paint_photos/ 目录下的所有图片，按顺序为每张图片插入一条数据库记录
+
+Author: yunhu
+Date: 2019/5/19
 """
 
 import pickle
@@ -56,20 +59,17 @@ def insert_db():
     else:
         print("No such file,please run get_feature.py first")
 
-    # sqlite3.register_adapter(np.ndarray, adapt_array)
     conn = sqlite3.connect(config.DB_PATH)
     cursor = conn.cursor()
-    pkl_file = open('imageData.pkl', 'rb')
-    imgFeature = pickle.load(pkl_file)  # 特征值
-    data_dir = config.DATA_DIR  # 数据来源文件夹
-    contents = os.listdir(data_dir)  # 返回指定的文件夹包含的文件或文件夹的名字的列表 contents ['flowerBird', 'human', 'landscape']
-    classes = [each for each in contents if
-               os.path.isdir(data_dir + each)]  # classes ['flowerBird', 'human', 'landscape']
-    conn = sqlite3.connect(config.DB_PATH)
-    cursor = conn.cursor()
+    pkl_path = os.path.join(config.BASE_DIR, 'imageData.pkl')
+    with open(pkl_path, 'rb') as pkl_file:
+        imgFeature = pickle.load(pkl_file)  # 特征值
+    data_dir = config.DATA_DIR
+    contents = os.listdir(data_dir)
+    classes = [each for each in contents if os.path.isdir(os.path.join(data_dir, each))]
     i = 0
     for each in classes:
-        class_path = data_dir + each  # paint_photos/human
+        class_path = os.path.join(data_dir, each)
         files = os.listdir(class_path)  # 具体的文件名 所有的
         for file in files:
             if i < 5000:
@@ -86,7 +86,7 @@ def insert_db():
                                (tempId, tempLabel, file, sqlite3.Binary(tempFeatBin)))
                 # cursor.execute('insert into image VALUES (%d,%s,%s,%s)',([tempId,  tempLabel, file, tempFeature]))
                 i = i + 1
-    print(cursor.rowcount)  # reusult 1
+    print(cursor.rowcount)
     cursor.close()
     conn.commit()
     conn.close()

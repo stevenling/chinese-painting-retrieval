@@ -1,22 +1,16 @@
-"""
-图像检索界面，用于显示输入图像、分类结果和检索结果。
-
-Author: yunhu
-Date: 2019/5/19
-"""
-
+import numpy as np
 import os
+import sys
 import pickle
 import sqlite3
-import sys
-import numpy as np
 import tensorflow as tf
-import app
-import config
 import ftrain
+import app
+
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QApplication, QFileDialog, QMainWindow
-from tensorflow_vgg import vgg16, utils
+from PyQt5.QtWidgets import QFileDialog
+from tensorflow_vgg import vgg16
+from tensorflow_vgg import utils
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
@@ -24,9 +18,7 @@ codes_batch = []
 imageUrl = ""
 # 图像的类别
 pre_value = ""  
-labels_vecs = ['flowerBird', 'human', 'landscape']
-
-
+labels_vecs = ['flowerBird','human','landscape']
 class Ui_MainWindow(object):
     def setup_ui(self, MainWindow):
         MainWindow.setObjectName("图像预测")
@@ -34,17 +26,17 @@ class Ui_MainWindow(object):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
 
-        self.pushButton = QtWidgets.QPushButton(self.centralwidget)  # 第一个按钮点击显示图片
+        self.pushButton = QtWidgets.QPushButton(self.centralwidget) #第一个按钮点击显示图片
         self.pushButton.setGeometry(QtCore.QRect(600, 90, 200, 50))
         self.pushButton.setObjectName("pushButton")
         self.pushButton.setFont(QtGui.QFont("Roman times", 15, QtGui.QFont.Bold))  # 第一个按钮设置字体大小
 
-        self.pushButton2 = QtWidgets.QPushButton(self.centralwidget)  # 第二个按钮点击进行图像预测
+        self.pushButton2 = QtWidgets.QPushButton(self.centralwidget) #第二个按钮点击进行图像预测
         self.pushButton2.setGeometry(QtCore.QRect(900, 90, 200, 50))
         self.pushButton2.setObjectName("pushButton2")
         self.pushButton2.setFont(QtGui.QFont("Roman times", 15, QtGui.QFont.Bold))  # 第二个按钮设置字体大小
 
-        self.pushButton3 = QtWidgets.QPushButton(self.centralwidget)  # 第三个按钮点击进行图像检索
+        self.pushButton3 = QtWidgets.QPushButton(self.centralwidget) #第三个按钮点击进行图像检索
         self.pushButton3.setGeometry(QtCore.QRect(1200, 90, 200, 50))
         self.pushButton3.setObjectName("pushButton3")
         self.pushButton3.setFont(QtGui.QFont("Roman times", 15, QtGui.QFont.Bold))  # 设置字体大小
@@ -62,7 +54,7 @@ class Ui_MainWindow(object):
 
         # 显示第一张图像
         self.label_2 = QtWidgets.QLabel(self.centralwidget)
-        self.label_2.setGeometry(QtCore.QRect(100, 200, 800, 500))  # 左上宽高
+        self.label_2.setGeometry(QtCore.QRect(100, 200, 800, 500))#左上宽高
         self.label_2.setObjectName("label_2")
 
         # 显示分类结果
@@ -104,9 +96,9 @@ class Ui_MainWindow(object):
         self.pushButton2.setText(_translate("MainWindow", "点击预测"))
         self.pushButton3.setText(_translate("MainWindow", "检索图像"))
         self.label.setText(_translate("MainWindow", "请输入图像路径："))
-        self.label_2.setText(_translate("MainWindow", ""))  # 输入图像的控件
-        self.label_3.setText(_translate("MainWindow", ""))  # 分类结果
-        self.label_4.setText(_translate("MainWindow", ""))  # 检索出来的图像的控件
+        self.label_2.setText(_translate("MainWindow", "")) # 输入图像的控件
+        self.label_3.setText(_translate("MainWindow", "")) # 分类结果
+        self.label_4.setText(_translate("MainWindow", "")) # 检索出来的图像的控件
     
     def show_image_category(self):
         """
@@ -167,12 +159,12 @@ class Ui_MainWindow(object):
         #nowLabel = labels_vecs[pre_value] #当前的类别
         if pre_value == 0:
             nowLabel = "flowerBird"
-        elif pre_value == 1:
+        elif (pre_value == 1):
             nowLabel = "human"
         elif (pre_value == 2):
             nowLabel = "landscape"
         print(nowLabel)
-        conn = sqlite3.connect(config.DB_PATH)
+        conn = sqlite3.connect('paint.db')
         cursor = conn.cursor()
         #cursor.execute('select * from image where label = "flowerBird"')# 获取标签是花鸟的数据
         cursor.execute('select * from image where label = ?', [nowLabel])
@@ -197,13 +189,16 @@ class Ui_MainWindow(object):
         prefixImageURl = "C://Users/Administrator/PycharmProjects/recognizePaint/paint_photos/"
         self.label_4.setText("")
         # 拼接图像路径 前缀 + 文件名
-        imageUrl = prefixImageURl + nowLabel + "/" + retrievalResult
+        imageUrl = prefixImageURl + nowLabel + "/"+retrievalResult
         print(imageUrl)
         jpg = QtGui.QPixmap(imageUrl).scaled(400, 400)
         self.label_4.setPixmap(jpg)
 
-    def distance(self, x1, x2):
+    def distance(self,x1, x2):
         return np.sqrt(np.sum((x1-x2)**2))
+
+from PyQt5.QtWidgets import QApplication, QMainWindow
+import sys
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

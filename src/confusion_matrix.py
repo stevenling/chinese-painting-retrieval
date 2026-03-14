@@ -1,4 +1,11 @@
-#coding=utf-8
+"""
+使用已训练好的分类模型，对 test_photos/ 目录下的测试图片批量进行预测，
+并将预测结果填入 3x3 的矩阵 res，用于观察各类别之间的混淆情况。
+
+Author: yunhu
+Date: 2019/5/19
+"""
+# -*- coding: utf-8 -*-
 import os
 import sys
 
@@ -8,9 +15,10 @@ from PyQt5 import QtWidgets, QtCore
 from tensorflow_vgg import utils, vgg16
 
 import ftrain
+import config
 
 # 数据来源文件夹
-from config import TEST_DATA_DIR as test_data_dir 
+from config import TEST_DATA_DIR as test_data_dir
 # 返回指定的文件夹包含的文件或文件夹的名字的列表
 contents = os.listdir(test_data_dir)
 # classes 最终是一个列表，比如 ['flowerBird', 'human', 'landscape']
@@ -19,28 +27,28 @@ classes = [each for each in contents if os.path.isdir(test_data_dir + each)]
 
 pre_value = ""
 res = np.zeros((3,3))
-labels_vecs = ['flowerBird','human','landscape']
+labels_vecs = ['flowerBird', 'human', 'landscape']
 labels_vecs = np.array(labels_vecs)
 real_img_url_list = []
+
 
 def get_img_url_list():
     """
     获取所有图片的完整路径
     """
     test_pic_arr = []
-    print(classes) # ['flowerBird', 'human', 'landscape']
+    print(classes)  # ['flowerBird', 'human', 'landscape']
     for each in classes:
         print("Starting {} images".format(each))
-        class_path = test_data_dir + each
+        class_path = os.path.join(test_data_dir, each)
         # paint_photos/human
         # 具体的文件名
         files = os.listdir(class_path)
-        pre_img_url = "C://Users/Administrator/PycharmProjects/recognizePaint/"  # 前缀
         for i, file in enumerate(files, 1):  # file 人物验证1
             #print(i)
             #print(files)
-            img_url = class_path + "/" + file  ## test_photos/flowerBird/花鸟验证1.jpg
-            real_img_url = pre_img_url + img_url # 完整的图像路径
+            # 完整图像路径：使用 config.TEST_IMAGE_PREFIX 拼接
+            real_img_url = os.path.join(config.TEST_IMAGE_PREFIX, "test_photos", each, file)
             #print(real_img_url)
             real_img_url_list.append(real_img_url)  # 获取所有图像文件路径 存到 list 中
     print(real_img_url_list)
@@ -60,6 +68,7 @@ def per_picture(count):
 saver = tf.train.Saver()
 i = 0
 j = 0
+
 
 def get_image_retrieval_result():
     """
@@ -87,8 +96,9 @@ def get_image_retrieval_result():
                 i = i + 1
             res[i][j] = pre_value + 1
             print(res[i][j])
-            #print(labels_vecs[pre_value])
-            #print ("The prediction paint is:", labels_vecs[pre_value])
+            # print(labels_vecs[pre_value])
+            # print("The prediction paint is:", labels_vecs[pre_value])
+
 
 def show():
     """
@@ -97,6 +107,7 @@ def show():
     for i in range(0, res.shape[0]):
         for j in range(0, res.shape[1]):
             print(res[i][j])
+
 
 def main():
     # 获取测试图片集合

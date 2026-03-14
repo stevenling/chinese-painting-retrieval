@@ -1,0 +1,23 @@
+import sqlite3
+
+def create_db():
+    """
+    创建数据库
+    """
+    conn = sqlite3.connect('paint.db')
+    cursor = conn.cursor()
+    # feature BLOB：用二进制（BLOB）形式存储该图像的特征向量
+    # （比如从 VGG16 提取出来的特征，用 pickle 序列化后存进来）。
+    cursor.execute('create table image(id integer primary key, label varchar(30), imgPath varchar(100), feature BLOB)')
+    #cursor.execute('insert into image (id, label, imgPath, feature) values (1, \'flowerbird\', \'paint_photos\flowerBird\', NULL)')
+    #通过 rowcount 获得插入的行数：
+    print(cursor.rowcount) #reusult 1
+    cursor.close()
+    conn.commit()
+    conn.close()
+    
+def main():
+    create_db()
+
+if __name__ == '__main__':
+    main()

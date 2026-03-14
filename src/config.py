@@ -1,5 +1,8 @@
 """
 项目统一配置文件：集中管理路径、文件名等常量，避免在各个脚本中硬编码。
+
+Author: yunhu
+Date: 2026/3/7
 """
 
 import os
@@ -32,8 +35,10 @@ BASE_URL = "https://gallery.artron.net"
 # 如需在本机上显示数据库中存储的图像，请将此路径改为实际的本地图像根目录。
 RETRIEVAL_IMAGE_ROOT = DATA_DIR
 
+# 混淆矩阵等脚本中拼接测试图像完整路径时的前缀（默认与 data 目录一致，可改为本机绝对路径）
+TEST_IMAGE_PREFIX = os.path.join(PROJECT_ROOT, "data")
+
 # 类别名称（英文，用于模型 / 数据库）
 CLASS_NAMES = ["flowerBird", "human", "landscape"]
 # 类别名称（中文，用于界面展示）
 CLASS_NAMES_ZH = ["花鸟", "人物", "山水"]
-

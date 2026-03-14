@@ -6,6 +6,9 @@
 - 接 GlobalAveragePooling + 自定义全连接分类头（256 + Dropout + 3 类 softmax）；
 - 先冻结 VGG16，只训练分类头；
 - 再解冻 VGG16 的 block5 做小学习率微调（fine-tuning）。
+
+Author: yunhu
+Date: 2019/5/19
 """
 
 from __future__ import annotations

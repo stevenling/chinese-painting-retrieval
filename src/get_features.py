@@ -1,4 +1,4 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 """
 使用 TensorFlow 2.x / Keras 提取数据集的特征值，存放在 codes.npy 中。
 
@@ -6,6 +6,9 @@
 - 遍历 data/paint_photos/ 下的子目录（类别），加载所有图片
 - 使用预训练 VGG16 的 'fc2' 层输出作为图像特征
 - 将所有图像特征堆叠成 codes.npy，并将对应标签写入 labels 文件
+
+Author: yunhu
+Date: 2019/5/19
 """
 
 import os

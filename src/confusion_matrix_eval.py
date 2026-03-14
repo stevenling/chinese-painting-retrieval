@@ -1,9 +1,11 @@
+# -*- coding: utf-8 -*-
 """
 使用已训练好的分类模型，对 test_photos/ 目录下的测试图片批量进行预测，
 并将预测结果填入 3x3 的矩阵 res，用于观察各类别之间的混淆情况。
-"""
 
-# coding=utf-8
+Author: yunhu
+Date: 2019/5/19
+"""
 import numpy as np
 import os
 import sys
@@ -18,7 +20,7 @@ import ftrain
 # 测试数据所在的根目录，每个子文件夹对应一个类别
 test_data_dir = 'test_photos/'  # 数据来源文件夹
 contents = os.listdir(test_data_dir)  # 返回指定的文件夹包含的文件或文件夹的名字的列表
-classes = [each for each in contents if os.path.isdir(test_data_dir + each)]
+classes = [each for each in contents if os.path.isdir(os.path.join(test_data_dir, each))]
 
 # 当前预测类别索引
 pre_value = ""
@@ -69,7 +71,6 @@ def per_picture(count):
 saver = tf.train.Saver()
 i = 0
 j = 0
-
 
 def get_image_retrieval_result():
     """

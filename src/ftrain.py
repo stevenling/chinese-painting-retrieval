@@ -6,6 +6,9 @@
 - 使用 StratifiedShuffleSplit 按 8:1:1 划分训练/验证/测试集
 - 构建两层全连接网络（256 维 + 3 类 softmax），使用 model.fit 进行训练
 - 保存训练好的 Keras 模型到 checkpoints 目录
+
+Author: yunhu
+Date: 2019/5/19
 """
 
 import os
@@ -186,4 +189,3 @@ def build_and_train_model() -> None:
 
 if __name__ == "__main__":
     build_and_train_model()
-
